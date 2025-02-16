@@ -1,0 +1,200 @@
+@import url('./sketchBtn.css');
+@import url('./gameMenu.css');
+
+body {
+    background-image: url(/img/fon-back.jpg);
+    background-size: cover;
+    background-position: center center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    margin: 0;
+    height: 100vh;
+
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+.title {
+    margin: 0;
+    margin-bottom: 29px;
+    font-size: 40px;
+    text-align: center;
+    color: #fff;
+
+    text-shadow:
+        0 0 7px #fff,
+        0 0 10px #fff,
+        0 0 21px #fff,
+        0 0 42px #bc13fe,
+        0 0 82px #bc13fe,
+        0 0 92px #bc13fe,
+        0 0 102px #bc13fe,
+        0 0 151px #bc13fe;
+}
+
+.game-content_inner {
+    display: flex;
+    align-items: flex-start;
+    height: 100%;
+    width: 100%;
+}
+
+canvas,
+.game-content_next,
+.game-content_score {
+    animation: pulsate 1.5s infinite alternate;
+    border: 1px solid #fff;
+    box-shadow:
+        0 0 .2rem #fff,
+        0 0 .2rem #fff,
+        0 0 .2rem #bc13fe,
+        0 0 0.8rem #bc13fe,
+        0 0 2.8rem #bc13fe,
+        inset 0 0 1.3rem #bc13fe;
+}
+
+@keyframes pulsate {
+    100% {
+        text-shadow:
+            0 0 4px #fff,
+            0 0 11px #fff,
+            0 0 19px #fff,
+            0 0 40px #bc13fe,
+            0 0 80px #bc13fe,
+            0 0 90px #bc13fe,
+            0 0 100px #bc13fe,
+            0 0 150px #bc13fe;
+    }
+
+    0% {
+        text-shadow:
+            0 0 2px #fff,
+            0 0 4px #fff,
+            0 0 6px #fff,
+            0 0 10px #bc13fe,
+            0 0 45px #bc13fe,
+            0 0 55px #bc13fe,
+            0 0 70px #bc13fe,
+            0 0 80px #bc13fe;
+    }
+}
+
+.canvas-bg {
+    background-color: rgba(0, 0, 0, 0.7);
+    margin-right: 15px;
+    width: 320px;
+}
+
+canvas {
+    width: 100%;
+}
+
+.game-content_next {
+    position: relative;
+    width: 150px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+
+.next_title {
+    position: absolute;
+    top: 10px;
+    left: 55px;
+    display: block;
+    width: 100%;
+    color: #fff;
+}
+
+.next_inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.game-content_score {
+    margin-bottom: 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 100px;
+    text-align: center;
+    padding-top: 10px;
+    color: #fff;
+}
+
+.game-content_score span {
+    display: block;
+}
+
+.score-title {
+    font-size: 10px;
+}
+
+.score-total {
+    font-size: 22px;
+}
+
+.game-btn {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+
+.game-controllers {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    height: 140px;
+}
+
+.game-controllers button {
+    border: 1px solid grey;
+}
+
+/* Верхняя кнопка ↑ */
+.top {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Нижняя кнопка ↓ */
+.bottom {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(180deg);
+}
+
+/* Левая кнопка ← */
+.left {
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+}
+
+/* Правая кнопка → */
+.right {
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+}
