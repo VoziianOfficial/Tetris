@@ -2,7 +2,7 @@ import { createGameMenu } from "./gameMenu.js"
 import { tetrisContent } from "./gameContents.js"
 import { addHoverForButtons } from "./sketch-btn.js"
 import { colors, tetrominoItems } from "./tetrominoItems.js"
-import { shuffle } from "./utils.js"
+import { isValidPos, rapidFallOnDown, showGameMessage, shuffle } from "./utils.js"
 
 const app = (difficulty) => {
     const gameContent = document.querySelector('.game-content')
@@ -39,6 +39,13 @@ const app = (difficulty) => {
     let isGameOver = false
     let requestAnimationId = null
 
+
+    const showGameOver = () => {
+        cancelAnimationFrame(requestAnimationId)
+        isGameOver = true
+        showGameMessage(context, canvas, 'GAME OVER!')
+    }
+
     function createTetromino() {
         if (tetrominoOrder.length === 0) {
             tetrominoOrder = ['I', 'J', 'L', 'O', 'S', 'T', 'Z']
@@ -49,8 +56,14 @@ const app = (difficulty) => {
         const name = tetrominoOrder.pop()
         const matrix = tetrominoItems[name]
 
-        const col = playArea[0].length / 2 - Math.ceil(matrix[0].length / 2)
+        const col = Math.floor(playArea[0].length / 2 - Math.ceil(matrix[0].length / 2));
+
         const row = name === 'I' ? -1 : -2;
+
+        // Проверяем, не будет ли новая фигура находиться в занятых клетках
+        if (!isValidPos(matrix, row, col, playArea)) {
+            return showGameOver()
+        }
 
         return {
             name,
@@ -61,30 +74,75 @@ const app = (difficulty) => {
 
     }
 
+    const placeTetromino = () => {
+        for (let row = 0; row < tetromino.matrix.length; row++) {
+            for (let col = 0; col < tetromino.matrix[row].length; col++) {
+                if (tetromino.matrix[row][col]) {
+                    if (tetromino.row + row < 0) {
+                        return showGameOver()
+                    }
+                    playArea[tetromino.row + row][tetromino.col + col] = tetromino.name
+                }
+            }
+        }
+        tetromino = createTetromino()
+    }
+
     const game = () => {
         requestAnimationId = requestAnimationFrame(game)
         context.clearRect(0, 0, canvas.width, canvas.height)
+
+        for (let row = 0; row < 20; row++) {
+            for (let col = 0; col < 10; col++) {
+                if (playArea[row][col]) {
+                    const name = playArea[row][col]
+                    context.fillStyle = colors[name]
+                    context.fillRect(col * squareSize, row * squareSize, squareSize - 1, squareSize - 1);
+                }
+
+            }
+        }
 
         if (tetromino) {
             if (++count > difficulty) {
                 tetromino.row++
                 count = 0
             }
-        }
-        context.fillStyle = colors[tetromino.name]
 
-        for (let row = 0; row < tetromino.matrix.length; row++) {
-            for (let col = 0; col < tetromino.matrix[row].length; col++) {
-                if (tetromino.matrix[row][col]) {
-                    context.fillRect((tetromino.col + col) * squareSize, (tetromino.row + row) * squareSize, squareSize - 1, squareSize - 1);
+            if (!isValidPos(tetromino.matrix, tetromino.row, tetromino.col, playArea)) {
+                tetromino.row--
+                placeTetromino()
+            }
+
+            context.fillStyle = colors[tetromino.name]
+
+            for (let row = 0; row < tetromino.matrix.length; row++) {
+                for (let col = 0; col < tetromino.matrix[row].length; col++) {
+                    if (tetromino.matrix[row][col]) {
+                        context.fillRect((tetromino.col + col) * squareSize, (tetromino.row + row) * squareSize, squareSize - 1, squareSize - 1);
+
+                    }
 
                 }
-
             }
         }
     }
 
-    startBtn.addEventListener('click', () => requestAnimationId = requestAnimationFrame(game))
+    document.addEventListener('keydown', (e) => {
+        if (isGameOver) return
+
+        if (e.key === "ArrowDown") { // ✅ Теперь правильно!
+            rapidFallOnDown(tetromino, playArea, placeTetromino)
+        }
+    })
+
+    startBtn.addEventListener('click', () => {
+        if (!requestAnimationId) {
+            game();
+        }
+    });
+
+
 
 
     addHoverForButtons()
@@ -92,3 +150,5 @@ const app = (difficulty) => {
 }
 
 createGameMenu(app);
+
+
